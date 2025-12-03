@@ -30,7 +30,7 @@ def get_logger(cfg):
     logger.info(OmegaConf.to_yaml(cfg))
 
 
-@torch.no_grad()
+#@torch.no_grad()
 def main(cfg):
     safe_state(seed=cfg.seed)
     
@@ -89,7 +89,14 @@ if __name__=='__main__':
     cfg_file = OmegaConf.load(cfg_file)
     
     cfg = OmegaConf.merge(default_cfg, cfg_file, OmegaConf.from_cli(extras))
-    cfg.eval = True
+    # Do not force `cfg.eval = True` here so the trainer can create
+    # the `train_dataset` (used to initialize models) even when
+    # running an evaluation pass with pretrained checkpoints.
+    # The script will still run validation/animation and won't start
+    # training because we don't call `trainer.train()` here.
+    # If you want to explicitly mark this as evaluation-only, set
+    # `--eval` in the CLI or update the config file.
+    # cfg.eval = True
     
     if args.output_dir is not None:
         cfg.logdir = args.output_dir

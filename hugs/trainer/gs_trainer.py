@@ -96,7 +96,7 @@ class GaussianTrainer():
                 init_betas = torch.stack([x['betas'] for x in self.train_dataset.cached_data], dim=0)
                 self.human_gs.create_betas(init_betas[0], cfg.human.optim_betas)
                 self.human_gs.initialize()
-            elif cfg.human.name == 'hugs_trimlp':
+            elif cfg.human.name in ['hugs_trimlp', 'hugs_triplane']:
                 init_betas = torch.stack([x['betas'] for x in self.val_dataset.cached_data], dim=0)
                 self.human_gs = HUGS_TRIMLP(
                     sh_degree=cfg.human.sh_degree, 

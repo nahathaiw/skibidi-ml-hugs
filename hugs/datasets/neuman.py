@@ -282,6 +282,10 @@ class NeumanDataset(torch.utils.data.Dataset):
         self.smpl_params = {}
         for k in smpl_params.keys():
             self.smpl_params[k] = torch.from_numpy(smpl_params[k]).float()
+        # expose betas for compatibility with trainer expectations
+        # trainer may access `dataset.betas[0]` to get initial shape
+        # keep as a tensor on CPU (trainer will move to CUDA as needed)
+        self.betas = self.smpl_params.get('betas')
         
         self.sam_mask_dir = f'{dataset_path}/4d_humans/sam_segmentations'
         self.msk_lists = sorted(glob.glob(f"{self.sam_mask_dir}/*.png"))
